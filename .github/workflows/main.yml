@@ -1,0 +1,31 @@
+name: Build XPrivacyLua APK
+
+on:
+  workflow_dispatch: # 可手动点击触发
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🧾 克隆仓库
+      uses: actions/checkout@v3
+
+    - name: ☕️ 安装 Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: 🛠️ 授权 Gradle 并构建 APK
+      run: |
+        chmod +x gradlew
+        ./gradlew assembleDebug
+
+    - name: 📦 上传 APK 构建产物
+      uses: actions/upload-artifact@v3
+      with:
+        name: XPrivacyLua-APK
+        path: app/build/outputs/apk/debug/app-debug.apk
